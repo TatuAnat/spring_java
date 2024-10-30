@@ -32,9 +32,13 @@ public class HelloController {
     public String helloCbr() {
         try {
             List<ValuteCursOnDate> listCurrencies = centralRussianBankService.getCurrenciesFromCbr();
-            return "ok cbr";
+            return listCurrencies.toString();
+
         } catch (Exception exception) {
             return "Error: " + exception.getMessage();
         }
     }
+
+
+
 }

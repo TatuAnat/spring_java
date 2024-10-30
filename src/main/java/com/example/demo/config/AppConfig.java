@@ -8,34 +8,46 @@ import com.example.demo.service.CentralRussianBankService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
+
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPConstants;
+import javax.xml.soap.SOAPException;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class AppConfig {
 
-    @Bean
-    public WebServiceTemplate webServiceTemplate(Jaxb2Marshaller marshaller) {
-        WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
-        webServiceTemplate.setMarshaller(marshaller); // Set marshaller for request
-        webServiceTemplate.setUnmarshaller(marshaller); // Set unmarshaller for response
-        return webServiceTemplate;
-    }
+
+
+
+
 
     @Bean
-    public Jaxb2Marshaller marshaller() {
-        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        // Register all classes that are used in XML requests and responses
-        marshaller.setClassesToBeBound(
+    public CentralRussianBankService cbrService() throws SOAPException {
+        CentralRussianBankService cbrService = new CentralRussianBankService();
+        Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
+        MessageFactory msgFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL);
+        SaajSoapMessageFactory newSoapMessageFactory = new SaajSoapMessageFactory(msgFactory);
+        cbrService.setMessageFactory(newSoapMessageFactory);
+
+        jaxb2Marshaller.setClassesToBeBound(
                 GetCursOnDateXml.class,
                 GetCursOnDateXmlResponse.class,
                 GetCursOnDateXmlResult.class,
-                ValuteCursOnDate.class
-        );
-        return marshaller;
+                ValuteCursOnDate.class);
+
+        cbrService.setMarshaller(jaxb2Marshaller);
+        cbrService.setUnmarshaller(jaxb2Marshaller);
+        return cbrService;
     }
 
     @Bean
-    public CentralRussianBankService centralRussianBankService() {
-        return new CentralRussianBankService(); // Inject WebServiceTemplate into the service
+    public CharacterEncodingFilter characterEncodingFilter() {
+        CharacterEncodingFilter filter = new CharacterEncodingFilter();
+        filter.setEncoding(StandardCharsets.UTF_8.name());
+        filter.setForceEncoding(true);
+        return filter;
     }
 }

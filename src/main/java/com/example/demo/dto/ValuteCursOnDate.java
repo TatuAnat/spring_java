@@ -5,23 +5,25 @@ import lombok.Data;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "ValuteCursOnDate")
 @Data
-@XmlAccessorType(XmlAccessType.FIELD)  // Use fields directly for JAXB marshalling/unmarshalling
 public class ValuteCursOnDate {
 
-    @XmlElement(name = "Vname")  // Maps to XML element <Vname>
+    @XmlElement(name = "Vname")
     private String name;
 
-    @XmlElement(name = "Vnom")  // Maps to XML element <Vnom>
+    @XmlElement(name = "Vnom")
     private int nominal;
 
-    @XmlElement(name = "Vcurs")  // Maps to XML element <Vcurs>
+    @XmlElement(name = "Vcurs")
     private double course;
 
-    @XmlElement(name = "Vcode")  // Maps to XML element <Vcode>
+    @XmlElement(name = "Vcode")
     private String code;
 
-    @XmlElement(name = "VchCode")  // Maps to XML element <VchCode>
+    @XmlElement(name = "VchCode")
     private String chCode;
 }
